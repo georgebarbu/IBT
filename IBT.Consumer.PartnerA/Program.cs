@@ -10,6 +10,7 @@ namespace IBT.Consumer.PartnerA
     {
         static void Main(string[] args)
         {
+
         }
     }
 }
