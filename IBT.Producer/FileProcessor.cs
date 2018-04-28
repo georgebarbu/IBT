@@ -1,24 +1,20 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.OleDb;
 using System.IO;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
+using System.Linq;
+using System.Messaging;
+using System.Text;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using IBT.Messaging;
+using Newtonsoft.Json;
 
-namespace IBT.Processor
+namespace IBT.Router
 {
     public class FileProcessor : IMessageProcessor
     {
         private static FileSystemWatcher _fileSystemWatcher;
 
         private const string MessagesFilePath = @"D:\Vontobel\IncomingMessages";
-        private const string PartnerAQueue = "";
-        private const string PartnerBQueue = "";
-        private const string DBQueue = "";
 
         private readonly IDatabaseProcessor _databaseProcessor;
 
@@ -33,7 +29,6 @@ namespace IBT.Processor
             {
                 StartDirectoryMonitoring(MessagesFilePath);
 
-
                 // wait...
                 Console.ReadLine();
             }
@@ -47,33 +42,65 @@ namespace IBT.Processor
             }
         }
 
-        private void ProcessSingleMessage(XDocument document)
+        private void ProcessSingleMessage(XNode document)
         {
-            SendToDB(document);
+            SendToDb(document);
             SendToPartnerAQueue(document);
             SendToPartnerBQueue(document);
         }
 
-        private void SendToPartnerBQueue(XDocument document)
+        private void SendToPartnerBQueue(XNode document)
         {
-            throw new NotImplementedException();
-        }
+            // check for EventType
+            var eventType = document.XPathSelectElement("IBTTermSheet/Events/Event/EventType")?.Value;
+            if("1" != eventType) return;
 
-        private void SendToPartnerAQueue(XDocument document)
-        {
-            
-        }
+            var partnerBQueueName = System.Configuration.ConfigurationManager.AppSettings["PartnerBQueueName"];
+            if (string.IsNullOrWhiteSpace(partnerBQueueName)) Console.WriteLine("Invalid PartnerB Queue Name");
 
-        private void SendToDB(XDocument document)
-        {
-            var value = (IEnumerable) document.XPathEvaluate("/IBTTermSheet/Events/Event/EventType");
-            foreach (XElement element in value) // should be just one element
+            if (!MessageQueue.Exists(partnerBQueueName ?? throw new InvalidOperationException()))
             {
-                var eventType = Int32.Parse(element.Value);
-                var dbMessage = new DbMessage(eventType, DateTime.UtcNow.ToString("yyyyMMddHHmmssffff"));
-                _databaseProcessor.PersistToDatabase(dbMessage);
-                break;
+                var messageQueue = MessageQueue.Create(partnerBQueueName, true);
+                using (messageQueue)
+                {
+                    var tx = new MessageQueueTransaction();
+                    tx.Begin();
+                    messageQueue.Send(document, tx);
+                    tx.Commit();
+                }
             }
+        }
+
+        private void SendToPartnerAQueue(XNode document)
+        {
+            var partnerAQueueName = System.Configuration.ConfigurationManager.AppSettings["PartnerAQueueName"];
+            if (string.IsNullOrWhiteSpace(partnerAQueueName)) Console.WriteLine("Invalid Partner A Queue Name");
+
+            if (!MessageQueue.Exists(partnerAQueueName ?? throw new InvalidOperationException()))
+            {
+                var messageQueue = MessageQueue.Create(partnerAQueueName, true);
+                using (messageQueue)
+                {
+                    var tx = new MessageQueueTransaction();
+                    tx.Begin();
+                    messageQueue.Send(document.ToString(), tx);
+                    tx.Commit();
+                }
+            }
+        }
+
+        private void SendToDb(XNode document)
+        {
+            var eventTypeValue = document.XPathSelectElement("/IBTTermSheet/Events/Event/EventType")?.Value;
+            if(string.IsNullOrWhiteSpace(eventTypeValue)) return;
+            var eventType = Int32.Parse(eventTypeValue);
+            var dbMessage = new DbMessage
+            {
+                EventType = eventType,
+                TimeStamp = DateTime.UtcNow.ToString("yyyyMMddHHmmssffff")
+            };
+
+            //_databaseProcessor.PersistToDatabase(dbMessage);
         }
 
         private void StartDirectoryMonitoring(string path)
@@ -86,12 +113,16 @@ namespace IBT.Processor
 
         private void FileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            Task.Factory.StartNew(() =>
-            {
-                if (string.IsNullOrWhiteSpace(e.FullPath)) return;
-                var xDocument = XDocument.Load(e.FullPath);
-                ProcessSingleMessage(xDocument);
-            });
+            if (string.IsNullOrWhiteSpace(e.FullPath)) return;
+            var xDocument = XDocument.Load(e.FullPath);
+            ProcessSingleMessage(xDocument);
+
+            //Task.Factory.StartNew(() =>
+            //{
+            //    if (string.IsNullOrWhiteSpace(e.FullPath)) return;
+            //    var xDocument = XDocument.Load(e.FullPath);
+            //    ProcessSingleMessage(xDocument);
+            //});
         }
     }
 }

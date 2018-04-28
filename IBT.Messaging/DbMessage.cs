@@ -1,14 +1,11 @@
-﻿namespace IBT.Messaging
+﻿using System;
+
+namespace IBT.Messaging
 {
+    [Serializable]
     public sealed class DbMessage
     {
-        public DbMessage(int eventType, string timeStamp)
-        {
-            EventType = eventType;
-            TimeStamp = timeStamp;
-        }
-
-        public int EventType { get; private set; }
-        public string TimeStamp { get; private set; }
+        public int EventType { get; set; }
+        public string TimeStamp { get; set; }
     }
 }

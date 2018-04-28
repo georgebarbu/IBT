@@ -1,4 +1,4 @@
-﻿namespace IBT.Processor
+﻿namespace IBT.Router
 {
     public enum ProcessorType
     {

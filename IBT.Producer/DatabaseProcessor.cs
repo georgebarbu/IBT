@@ -2,7 +2,7 @@
 using Dapper.Contrib.Extensions;
 using IBT.Messaging;
 
-namespace IBT.Processor
+namespace IBT.Router
 {
     public class DatabaseProcessor : IDatabaseProcessor
     {
@@ -13,10 +13,5 @@ namespace IBT.Processor
                 sqlConnection.Insert(message);
             }
         }
-    }
-
-    public interface IDatabaseProcessor
-    {
-        void PersistToDatabase(DbMessage message);
     }
 }

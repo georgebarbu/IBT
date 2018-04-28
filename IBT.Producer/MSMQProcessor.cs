@@ -1,4 +1,4 @@
-﻿namespace IBT.Processor
+﻿namespace IBT.Router
 {
     /// <summary>
     /// Process IBT messages from MSMQ

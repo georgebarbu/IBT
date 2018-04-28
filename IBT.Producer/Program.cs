@@ -1,7 +1,7 @@
 ﻿using System;
 using Unity;
 
-namespace IBT.Processor
+namespace IBT.Router
 {
     class Program
     {
