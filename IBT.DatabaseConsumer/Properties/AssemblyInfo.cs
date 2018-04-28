@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("IBT.Processor")]
+[assembly: AssemblyTitle("IBT.Consumer.Database")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("IBT.Processor")]
+[assembly: AssemblyProduct("IBT.Consumer.Database")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1f1fa308-5113-434f-8be8-d03dcd85b473")]
+[assembly: Guid("b3d77d93-8b9c-4172-be6e-3bd439c7f6b0")]
 
 // Version information for an assembly consists of the following four values:
 //

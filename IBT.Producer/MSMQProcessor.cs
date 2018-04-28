@@ -1,4 +1,4 @@
-﻿namespace IBT.Producer
+﻿namespace IBT.Processor
 {
     /// <summary>
     /// Process IBT messages from MSMQ

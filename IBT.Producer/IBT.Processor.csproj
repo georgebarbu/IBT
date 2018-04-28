@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{1F1FA308-5113-434F-8BE8-D03DCD85B473}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>IBT.Producer</RootNamespace>
-    <AssemblyName>IBT.Producer</AssemblyName>
+    <RootNamespace>IBT.Processor</RootNamespace>
+    <AssemblyName>IBT.Processor</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -35,8 +35,16 @@
     <Reference Include="CommonServiceLocator, Version=2.0.3.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.5.8.6\lib\net47\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="Dapper, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.50.4\lib\net451\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper.Contrib, Version=1.50.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.Contrib.1.50.4\lib\net451\Dapper.Contrib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Messaging" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -68,16 +76,24 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContainerInitializer.cs" />
+    <Compile Include="DatabaseProcessor.cs" />
     <Compile Include="FileProcessor.cs" />
     <Compile Include="IMessageProcessor.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="MSMQProcessor.cs" />
+    <Compile Include="ProcessorType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IBT.Messaging\IBT.Messaging.csproj">
+      <Project>{76E3A576-7987-4CE5-AB24-D6BDDFD29BDE}</Project>
+      <Name>IBT.Messaging</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

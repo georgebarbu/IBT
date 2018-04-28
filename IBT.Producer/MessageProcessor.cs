@@ -1,20 +1,24 @@
-﻿namespace IBT.Producer
+﻿namespace IBT.Processor
 {
-    public class MessageProcessor
-    {
-        private readonly IMessageProcessor _messageProcessor;
+    //public class MessageProcessor : IProcessor
+    //{
+    //    private readonly IMessageProcessor _messageProcessor;
 
-        public MessageProcessor(IMessageProcessor messageProcessor)
-        {
-            _messageProcessor = messageProcessor;
-        }
+    //    public MessageProcessor(IMessageProcessor messageProcessor)
+    //    {
+    //        _messageProcessor = messageProcessor;
+    //    }
 
-        public void StartWork()
-        {
-            //var fileProcessor = container.Resolve<IMessageProcessor>("FileProcessor");
-            //fileProcessor.ProcessMessages();
+    //    public void StartWork()
+    //    {
+    //        //var fileProcessor = container.Resolve<IMessageProcessor>("FileProcessor");
+    //        //fileProcessor.ProcessMessages();
 
-            _messageProcessor.ProcessMessages();
-        }
-    }
+    //        _messageProcessor.ProcessMessages();
+    //    }
+    //}
+
+    //public interface IProcessor
+    //{
+    //}
 }

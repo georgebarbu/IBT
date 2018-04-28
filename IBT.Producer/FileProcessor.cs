@@ -1,23 +1,36 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data.OleDb;
 using System.IO;
-using System.Messaging;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using IBT.Messaging;
 
-namespace IBT.Producer
+namespace IBT.Processor
 {
     public class FileProcessor : IMessageProcessor
     {
         private static FileSystemWatcher _fileSystemWatcher;
 
         private const string MessagesFilePath = @"D:\Vontobel\IncomingMessages";
-        private const string PartnerAQueueName = "";
-        private const string PartnerBQueueName = "";
+        private const string PartnerAQueue = "";
+        private const string PartnerBQueue = "";
+        private const string DBQueue = "";
+
+        private readonly IDatabaseProcessor _databaseProcessor;
+
+        public FileProcessor(IDatabaseProcessor databaseProcessor)
+        {
+            _databaseProcessor = databaseProcessor;
+        }
 
         public void ProcessMessages()
         {
             try
             {
-                InitializeQueues();
-
                 StartDirectoryMonitoring(MessagesFilePath);
 
 
@@ -34,15 +47,36 @@ namespace IBT.Producer
             }
         }
 
-        /// <summary>
-        /// Setup queues for the two partners
-        /// </summary>
-        private void InitializeQueues()
+        private void ProcessSingleMessage(XDocument document)
+        {
+            SendToDB(document);
+            SendToPartnerAQueue(document);
+            SendToPartnerBQueue(document);
+        }
+
+        private void SendToPartnerBQueue(XDocument document)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void SendToPartnerAQueue(XDocument document)
         {
             
         }
 
-        private static void StartDirectoryMonitoring(string path)
+        private void SendToDB(XDocument document)
+        {
+            var value = (IEnumerable) document.XPathEvaluate("/IBTTermSheet/Events/Event/EventType");
+            foreach (XElement element in value) // should be just one element
+            {
+                var eventType = Int32.Parse(element.Value);
+                var dbMessage = new DbMessage(eventType, DateTime.UtcNow.ToString("yyyyMMddHHmmssffff"));
+                _databaseProcessor.PersistToDatabase(dbMessage);
+                break;
+            }
+        }
+
+        private void StartDirectoryMonitoring(string path)
         {
             _fileSystemWatcher = new FileSystemWatcher {Path = path};
 
@@ -50,11 +84,14 @@ namespace IBT.Producer
             _fileSystemWatcher.EnableRaisingEvents = true;
         }
 
-        private static void FileSystemWatcher_Created(object sender, FileSystemEventArgs e)
+        private void FileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            Console.WriteLine($"File {e.Name} received");
-            
-
+            Task.Factory.StartNew(() =>
+            {
+                if (string.IsNullOrWhiteSpace(e.FullPath)) return;
+                var xDocument = XDocument.Load(e.FullPath);
+                ProcessSingleMessage(xDocument);
+            });
         }
     }
 }

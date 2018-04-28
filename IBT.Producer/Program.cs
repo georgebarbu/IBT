@@ -1,20 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Unity;
 
-namespace IBT.Producer
+namespace IBT.Processor
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var container = new UnityContainer();
             ContainerInitializer.Initialize(container);
 
-            
+            var messageProcessorType = System.Configuration.ConfigurationManager.AppSettings["MessageProcessorType"];
+            if (Enum.TryParse(messageProcessorType, true, out ProcessorType processorType))
+            {
+                var processor = container.Resolve<IMessageProcessor>(processorType.ToString());
+                processor?.ProcessMessages();
+            }
 
 
         }

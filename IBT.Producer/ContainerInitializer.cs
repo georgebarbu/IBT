@@ -1,13 +1,13 @@
 ﻿using Unity;
 
-namespace IBT.Producer
+namespace IBT.Processor
 {
     public static class ContainerInitializer
     {
         public static void Initialize(IUnityContainer container)
         {
-            container.RegisterType<IMessageProcessor, FileProcessor>("FileProcessor");
-            container.RegisterType<>()
+            container.RegisterType<IMessageProcessor, FileProcessor>("File");
+            container.RegisterType<IMessageProcessor, MSMQProcessor>("Msmq");
         }
     }
 }
