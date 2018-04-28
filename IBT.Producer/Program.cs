@@ -14,6 +14,7 @@ namespace IBT.Router
             if (Enum.TryParse(messageProcessorType, true, out ProcessorType processorType))
             {
                 var processor = container.Resolve<IMessageProcessor>(processorType.ToString());
+
                 processor?.ProcessMessages();
             }
 

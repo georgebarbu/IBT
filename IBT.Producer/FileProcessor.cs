@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Messaging;
-using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using IBT.Messaging;
-using Newtonsoft.Json;
 
 namespace IBT.Router
 {
@@ -27,9 +25,9 @@ namespace IBT.Router
         {
             try
             {
+                Console.WriteLine("Waiting for messages...");
                 StartDirectoryMonitoring(MessagesFilePath);
 
-                // wait...
                 Console.ReadLine();
             }
             catch (Exception e)
@@ -53,21 +51,19 @@ namespace IBT.Router
         {
             // check for EventType
             var eventType = document.XPathSelectElement("IBTTermSheet/Events/Event/EventType")?.Value;
-            if("1" != eventType) return;
+            if ("1" != eventType) return;
 
             var partnerBQueueName = System.Configuration.ConfigurationManager.AppSettings["PartnerBQueueName"];
             if (string.IsNullOrWhiteSpace(partnerBQueueName)) Console.WriteLine("Invalid PartnerB Queue Name");
 
-            if (!MessageQueue.Exists(partnerBQueueName ?? throw new InvalidOperationException()))
+            using (var messageQueue = new MessageQueue(partnerBQueueName))
             {
-                var messageQueue = MessageQueue.Create(partnerBQueueName, true);
-                using (messageQueue)
-                {
-                    var tx = new MessageQueueTransaction();
-                    tx.Begin();
-                    messageQueue.Send(document, tx);
-                    tx.Commit();
-                }
+                var tx = new MessageQueueTransaction();
+                tx.Begin();
+                Console.WriteLine("Sending message to partner B");
+                messageQueue.Send(document.ToString(), tx);
+                tx.Commit();
+                Console.WriteLine("Message sent");
             }
         }
 
@@ -76,16 +72,14 @@ namespace IBT.Router
             var partnerAQueueName = System.Configuration.ConfigurationManager.AppSettings["PartnerAQueueName"];
             if (string.IsNullOrWhiteSpace(partnerAQueueName)) Console.WriteLine("Invalid Partner A Queue Name");
 
-            if (!MessageQueue.Exists(partnerAQueueName ?? throw new InvalidOperationException()))
+            using (var messageQueue = new MessageQueue(partnerAQueueName))
             {
-                var messageQueue = MessageQueue.Create(partnerAQueueName, true);
-                using (messageQueue)
-                {
-                    var tx = new MessageQueueTransaction();
-                    tx.Begin();
-                    messageQueue.Send(document.ToString(), tx);
-                    tx.Commit();
-                }
+                var tx = new MessageQueueTransaction();
+                tx.Begin();
+                Console.WriteLine("Sending message to partner A");
+                messageQueue.Send(document.ToString(), tx);
+                tx.Commit();
+                Console.WriteLine("Message sent");
             }
         }
 
@@ -113,16 +107,16 @@ namespace IBT.Router
 
         private void FileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(e.FullPath)) return;
-            var xDocument = XDocument.Load(e.FullPath);
-            ProcessSingleMessage(xDocument);
+            //if (string.IsNullOrWhiteSpace(e.FullPath)) return;
+            //var xDocument = XDocument.Load(e.FullPath);
+            //ProcessSingleMessage(xDocument);
 
-            //Task.Factory.StartNew(() =>
-            //{
-            //    if (string.IsNullOrWhiteSpace(e.FullPath)) return;
-            //    var xDocument = XDocument.Load(e.FullPath);
-            //    ProcessSingleMessage(xDocument);
-            //});
+            Task.Factory.StartNew(() =>
+            {
+                if (string.IsNullOrWhiteSpace(e.FullPath)) return;
+                var xDocument = XDocument.Load(e.FullPath);
+                ProcessSingleMessage(xDocument);
+            });
         }
     }
 }

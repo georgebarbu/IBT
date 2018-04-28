@@ -21,26 +21,23 @@ namespace IBT.Consumer.PartnerA
             var partnerAQueueName = System.Configuration.ConfigurationManager.AppSettings["PartnerAQueueName"];
             if (string.IsNullOrWhiteSpace(partnerAQueueName)) Console.WriteLine("Invalid Partner A Queue Name");
 
-            if (!MessageQueue.Exists(partnerAQueueName ?? throw new InvalidOperationException()))
-            {
-                using (var messageQueue = new MessageQueue(partnerAQueueName, true))
-                    while (true)
+            using (var messageQueue = new MessageQueue(partnerAQueueName, true))
+                while (true)
+                {
+                    Console.WriteLine("Listening");
+                    XDocument document;
+                    using (var tx = new MessageQueueTransaction())
                     {
-                        Console.WriteLine("Listening");
-                        XDocument document;
-                        using (var tx = new MessageQueueTransaction())
-                        {
-                            tx.Begin();
-                            var message = messageQueue.Receive(tx);
-                            message.Formatter = new XmlMessageFormatter(new[] {"System.String, mscorlib"});
-                            document = XDocument.Parse(message.Body as string ?? throw new InvalidOperationException());
-                            tx.Commit();
-                        }
-
-                        var partnerAMessage = ProcessDocument(document);
-                        _emailService.SendEmail(partnerAMessage);
+                        tx.Begin();
+                        var message = messageQueue.Receive(tx);
+                        message.Formatter = new XmlMessageFormatter(new[] {"System.String, mscorlib"});
+                        document = XDocument.Parse(message.Body as string ?? throw new InvalidOperationException());
+                        tx.Commit();
                     }
-            }
+
+                    var partnerAMessage = ProcessDocument(document);
+                    _emailService.SendEmail(partnerAMessage);
+                }
         }
 
         private PartnerAMessage ProcessDocument(XNode document)

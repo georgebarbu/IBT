@@ -9,6 +9,7 @@ namespace IBT.Consumer.PartnerA
         {
             Console.WriteLine("Sending email with the following body:");
             var emailBody = $"{message.ProductNameFull}, {message.IbtTypeCode}, {message.EventType}, {message.Isin}";
+            Console.WriteLine(emailBody);
         }
     }
 
