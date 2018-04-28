@@ -7,11 +7,11 @@ using IBT.Messaging;
 
 namespace IBT.Consumer.PartnerA
 {
-    public class MessageHandler : IMessageHandler
+    public class PartnerAMessageHandler : IMessageHandler
     {
         private readonly IEmailService _emailService;
 
-        public MessageHandler(IEmailService emailService)
+        public PartnerAMessageHandler(IEmailService emailService)
         {
             _emailService = emailService;
         }
@@ -75,10 +75,5 @@ namespace IBT.Consumer.PartnerA
 
 
 
-    }
-
-    public interface IMessageHandler
-    {
-        void HandleMessages();
     }
 }

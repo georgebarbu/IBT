@@ -1,4 +1,5 @@
 ﻿using System;
+using IBT.Messaging;
 using Unity;
 
 namespace IBT.Consumer.PartnerA
@@ -7,6 +8,8 @@ namespace IBT.Consumer.PartnerA
     {
         static void Main()
         {
+            Console.WriteLine("PartnerA Handler started");
+
             var container = new UnityContainer();
             ContainerInitializer.Initialize(container);
 

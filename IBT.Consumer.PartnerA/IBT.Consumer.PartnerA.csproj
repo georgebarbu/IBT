@@ -73,7 +73,7 @@
   <ItemGroup>
     <Compile Include="ContainerInitializer.cs" />
     <Compile Include="EmailService.cs" />
-    <Compile Include="MessageHandler.cs" />
+    <Compile Include="PartnerAMessageHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

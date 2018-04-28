@@ -1,15 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using IBT.Messaging;
+using Unity;
 
 namespace IBT.Consumer.PartnerB
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
+            Console.WriteLine("PartnerB Handler started");
+
+            var container = new UnityContainer();
+            ContainerInitializer.Initialize(container);
+
+            var messageHandler = container.Resolve<IMessageHandler>();
+            messageHandler.HandleMessages();
+
+            Console.WriteLine("PartnerB Handler finished");
         }
     }
 }

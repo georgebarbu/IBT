@@ -68,12 +68,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContainerInitializer.cs" />
+    <Compile Include="FileService.cs" />
+    <Compile Include="PartnerBMessageHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IBT.Messaging\IBT.Messaging.csproj">
+      <Project>{76E3A576-7987-4CE5-AB24-D6BDDFD29BDE}</Project>
+      <Name>IBT.Messaging</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
