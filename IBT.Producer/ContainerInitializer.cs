@@ -7,6 +7,7 @@ namespace IBT.Producer
         public static void Initialize(IUnityContainer container)
         {
             container.RegisterType<IMessageProcessor, FileProcessor>("FileProcessor");
+            container.RegisterType<>()
         }
     }
 }

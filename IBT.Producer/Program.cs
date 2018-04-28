@@ -14,8 +14,7 @@ namespace IBT.Producer
             var container = new UnityContainer();
             ContainerInitializer.Initialize(container);
 
-            var fileProcessor = container.Resolve<IMessageProcessor>("FileProcessor");
-            fileProcessor.ProcessMessages();
+            
 
 
         }
