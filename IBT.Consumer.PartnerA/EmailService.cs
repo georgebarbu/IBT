@@ -11,10 +11,10 @@ namespace IBT.Consumer.PartnerA
 
         public void SendEmail(PartnerAMessage message)
         {
-            Console.WriteLine("Sending email with the following body:");
+            _log.Info("Sending email with the following body:");
             var emailBody = $"{message.ProductNameFull}, {message.IbtTypeCode}, {message.EventType}, {message.Isin}";
 
-            Console.WriteLine(emailBody); // Log message
+            _log.Info(emailBody); // Log message
 
             SendEmail(emailBody);
         }
@@ -40,7 +40,7 @@ namespace IBT.Consumer.PartnerA
             }
             catch (SmtpException smtpException)
             {
-                Console.WriteLine(smtpException);
+                _log.Info(smtpException);
             }
         }
     }
