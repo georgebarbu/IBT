@@ -24,7 +24,7 @@ namespace IBT.Consumer.PartnerB
             using (var messageQueue = new MessageQueue(partnerBQueueName, true))
                 while (true)
                 {
-                    Console.WriteLine("Listening");
+                    Console.WriteLine("Listening for partner B messages");
                     XDocument document;
                     using (var tx = new MessageQueueTransaction())
                     {

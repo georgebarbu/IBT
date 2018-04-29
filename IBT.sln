@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBT.Router", "IBT.Producer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBT.Messaging", "IBT.Messaging\IBT.Messaging.csproj", "{76E3A576-7987-4CE5-AB24-D6BDDFD29BDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IBT.Consumer.Database", "IBT.DatabaseConsumer\IBT.Consumer.Database.csproj", "{B3D77D93-8B9C-4172-BE6E-3BD439C7F6B0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{76E3A576-7987-4CE5-AB24-D6BDDFD29BDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76E3A576-7987-4CE5-AB24-D6BDDFD29BDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76E3A576-7987-4CE5-AB24-D6BDDFD29BDE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3D77D93-8B9C-4172-BE6E-3BD439C7F6B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3D77D93-8B9C-4172-BE6E-3BD439C7F6B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3D77D93-8B9C-4172-BE6E-3BD439C7F6B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3D77D93-8B9C-4172-BE6E-3BD439C7F6B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

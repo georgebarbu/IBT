@@ -10,7 +10,10 @@ namespace IBT.Consumer.PartnerB
         public void PersistFile(InstrumentNotification message)
         {
             var partnerBInbox = ConfigurationManager.AppSettings["PartnerBInbox"];
+            if (!Directory.Exists(partnerBInbox)) Directory.CreateDirectory(partnerBInbox);
+
             var filePath = partnerBInbox + $"\\{message.TimeStamp}.xml";
+
             Save(message, filePath);
         }
     

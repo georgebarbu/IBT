@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Messaging;
 using System.Threading.Tasks;
@@ -11,9 +12,6 @@ namespace IBT.Router
     public class FileProcessor : IMessageProcessor
     {
         private static FileSystemWatcher _fileSystemWatcher;
-
-        private const string MessagesFilePath = @"D:\Vontobel\IncomingMessages";
-
         private readonly IDatabaseProcessor _databaseProcessor;
 
         public FileProcessor(IDatabaseProcessor databaseProcessor)
@@ -26,7 +24,9 @@ namespace IBT.Router
             try
             {
                 Console.WriteLine("Waiting for messages...");
-                StartDirectoryMonitoring(MessagesFilePath);
+                var messagesInbox = ConfigurationManager.AppSettings["MessagesFilePath"];
+                if (string.IsNullOrWhiteSpace(messagesInbox)) throw new ArgumentException("Invalid Messages file path");
+                StartDirectoryMonitoring(messagesInbox);
 
                 Console.ReadLine();
             }
@@ -107,10 +107,6 @@ namespace IBT.Router
 
         private void FileSystemWatcher_Created(object sender, FileSystemEventArgs e)
         {
-            //if (string.IsNullOrWhiteSpace(e.FullPath)) return;
-            //var xDocument = XDocument.Load(e.FullPath);
-            //ProcessSingleMessage(xDocument);
-
             Task.Factory.StartNew(() =>
             {
                 if (string.IsNullOrWhiteSpace(e.FullPath)) return;
