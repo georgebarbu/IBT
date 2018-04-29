@@ -56,7 +56,7 @@ namespace IBT.Router
             var eventType = document.XPathSelectElement("IBTTermSheet/Events/Event/EventType")?.Value;
             if ("1" != eventType) return;
 
-            var partnerBQueueName = System.Configuration.ConfigurationManager.AppSettings["PartnerBQueueName"];
+            var partnerBQueueName = ConfigurationManager.AppSettings["PartnerBQueueName"];
             if (string.IsNullOrWhiteSpace(partnerBQueueName)) Console.WriteLine("Invalid PartnerB Queue Name");
 
             using (var messageQueue = new MessageQueue(partnerBQueueName))
@@ -72,7 +72,7 @@ namespace IBT.Router
 
         private void SendToPartnerAQueue(XNode document)
         {
-            var partnerAQueueName = System.Configuration.ConfigurationManager.AppSettings["PartnerAQueueName"];
+            var partnerAQueueName = ConfigurationManager.AppSettings["PartnerAQueueName"];
             if (string.IsNullOrWhiteSpace(partnerAQueueName)) Console.WriteLine("Invalid Partner A Queue Name");
 
             using (var messageQueue = new MessageQueue(partnerAQueueName))
