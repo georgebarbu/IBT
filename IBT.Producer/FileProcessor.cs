@@ -94,7 +94,7 @@ namespace IBT.Router
                 TimeStamp = DateTime.UtcNow.ToString("yyyyMMddHHmmssffff")
             };
 
-            //_databaseProcessor.PersistToDatabase(dbMessage);
+            _databaseProcessor.PersistToDatabase(dbMessage);
         }
 
         private void StartDirectoryMonitoring(string path)
