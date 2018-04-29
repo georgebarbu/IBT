@@ -1,4 +1,7 @@
-﻿using IBT.Messaging;
+﻿using System.Configuration;
+using System.IO;
+using IBT.Messaging;
+using System.Xml.Serialization;
 
 namespace IBT.Consumer.PartnerB
 {
@@ -6,12 +9,18 @@ namespace IBT.Consumer.PartnerB
     {
         public void PersistFile(InstrumentNotification message)
         {
-            throw new System.NotImplementedException();
+            var partnerBInbox = ConfigurationManager.AppSettings["PartnerBInbox"];
+            var filePath = partnerBInbox + $"\\{message.TimeStamp}.xml";
+            Save(message, filePath);
         }
-    }
-
-    public interface IFileService
-    {
-        void PersistFile(InstrumentNotification message);
+    
+        private void Save<T>(T file, string path)
+        {
+            var serializer = new XmlSerializer(typeof(T));
+            using (var writer = new StreamWriter(path))
+            {
+                serializer.Serialize(writer, file);
+            }
+        }
     }
 }

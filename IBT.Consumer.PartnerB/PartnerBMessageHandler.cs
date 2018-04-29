@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Messaging;
 using System.Xml.Linq;
+using System.Xml.XPath;
 using IBT.Messaging;
 
 namespace IBT.Consumer.PartnerB
@@ -34,13 +36,38 @@ namespace IBT.Consumer.PartnerB
                     }
 
                     var instrumentNotification = ProcessDocument(document);
-                    _fileService.PersistFile(instrumentNotification);
+                    if (!string.IsNullOrWhiteSpace(instrumentNotification.Isin))
+                        _fileService.PersistFile(instrumentNotification);
                 }
         }
 
-        private InstrumentNotification ProcessDocument(XDocument document)
+        private InstrumentNotification ProcessDocument(XNode document)
         {
-            throw new NotImplementedException();
+            var isin = ExtractIsin(document);
+            var timeStamp = DateTime.UtcNow.ToString("yyyyMMddHHmmssffff");
+
+            string ExtractIsin(XNode xDocument)
+            {
+                var instruments = xDocument.XPathSelectElement("IBTTermSheet/Instrument/InstrumentIds");
+                if (null == instruments) return string.Empty;
+                foreach (var instrumentId in instruments.Descendants())
+                {
+                    var idSchemeCode = instrumentId.XPathSelectElement("IdSchemeCode");
+                    if (null == idSchemeCode) continue;
+                    if (idSchemeCode.Value != "I-") continue;
+
+                    var isinNode = instrumentId.DescendantNodes().Last();
+                    return isinNode.ToString();
+                }
+
+                return string.Empty;
+            }
+
+            return new InstrumentNotification
+            {
+                Isin = isin,
+                TimeStamp = timeStamp
+            };
         }
     }
 }

@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="ContainerInitializer.cs" />
     <Compile Include="FileService.cs" />
+    <Compile Include="IFileService.cs" />
     <Compile Include="PartnerBMessageHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
