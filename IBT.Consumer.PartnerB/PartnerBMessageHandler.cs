@@ -9,6 +9,7 @@ namespace IBT.Consumer.PartnerB
 {
     public class PartnerBMessageHandler : IMessageHandler
     {
+        private readonly log4net.ILog _log = log4net.LogManager.GetLogger(typeof(PartnerBMessageHandler));
         private readonly IFileService _fileService;
 
         public PartnerBMessageHandler(IFileService fileService)
@@ -19,12 +20,12 @@ namespace IBT.Consumer.PartnerB
         public void HandleMessages()
         {
             var partnerBQueueName = System.Configuration.ConfigurationManager.AppSettings["PartnerBQueueName"];
-            if (string.IsNullOrWhiteSpace(partnerBQueueName)) Console.WriteLine("Invalid Partner B Queue Name");
+            if (string.IsNullOrWhiteSpace(partnerBQueueName)) _log.Info("Invalid Partner B Queue Name");
 
             using (var messageQueue = new MessageQueue(partnerBQueueName, true))
                 while (true)
                 {
-                    Console.WriteLine("Listening for partner B messages");
+                    _log.Info("Listening for partner B messages");
                     XDocument document;
                     using (var tx = new MessageQueueTransaction())
                     {

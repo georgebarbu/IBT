@@ -11,6 +11,8 @@ namespace IBT.Router
 {
     public class FileProcessor : IMessageProcessor
     {
+        private readonly log4net.ILog _log = log4net.LogManager.GetLogger(typeof(FileProcessor));
+
         private static FileSystemWatcher _fileSystemWatcher;
         private readonly IDatabaseProcessor _databaseProcessor;
 
@@ -23,16 +25,17 @@ namespace IBT.Router
         {
             try
             {
-                Console.WriteLine("Waiting for messages...");
+                _log.Info("Waiting for messages...");
                 var messagesInbox = ConfigurationManager.AppSettings["MessagesFilePath"];
                 if (string.IsNullOrWhiteSpace(messagesInbox)) throw new ArgumentException("Invalid Messages file path");
+
                 StartDirectoryMonitoring(messagesInbox);
 
                 Console.ReadLine();
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _log.Error(e);
             }
             finally
             {
@@ -60,10 +63,10 @@ namespace IBT.Router
             {
                 var tx = new MessageQueueTransaction();
                 tx.Begin();
-                Console.WriteLine("Sending message to partner B");
+                _log.Info("Sending message to partner B");
                 messageQueue.Send(document.ToString(), tx);
                 tx.Commit();
-                Console.WriteLine("Message sent");
+                _log.Info("Message sent");
             }
         }
 
@@ -76,10 +79,10 @@ namespace IBT.Router
             {
                 var tx = new MessageQueueTransaction();
                 tx.Begin();
-                Console.WriteLine("Sending message to partner A");
+                _log.Info("Sending message to partner A");
                 messageQueue.Send(document.ToString(), tx);
                 tx.Commit();
-                Console.WriteLine("Message sent");
+                _log.Info("Message sent");
             }
         }
 

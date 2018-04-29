@@ -6,9 +6,12 @@ namespace IBT.Consumer.PartnerB
 {
     class Program
     {
+        private static readonly log4net.ILog Log =
+            log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+
         static void Main()
         {
-            Console.WriteLine("PartnerB Handler started");
+            Log.Info("PartnerB Handler started");
 
             var container = new UnityContainer();
             ContainerInitializer.Initialize(container);
@@ -16,7 +19,7 @@ namespace IBT.Consumer.PartnerB
             var messageHandler = container.Resolve<IMessageHandler>();
             messageHandler.HandleMessages();
 
-            Console.WriteLine("PartnerB Handler finished");
+            Log.Info("PartnerB Handler finished");
         }
     }
 }

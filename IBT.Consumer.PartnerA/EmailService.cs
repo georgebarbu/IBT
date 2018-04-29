@@ -7,6 +7,8 @@ namespace IBT.Consumer.PartnerA
 {
     public class EmailService : IEmailService
     {
+        private readonly log4net.ILog _log = log4net.LogManager.GetLogger(typeof(EmailService));
+
         public void SendEmail(PartnerAMessage message)
         {
             Console.WriteLine("Sending email with the following body:");
