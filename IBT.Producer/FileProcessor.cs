@@ -115,6 +115,15 @@ namespace IBT.Router
                 if (string.IsNullOrWhiteSpace(e.FullPath)) return;
                 var xDocument = XDocument.Load(e.FullPath);
                 ProcessSingleMessage(xDocument);
+                try
+                {
+                    _log.Info($"Deleting message file {e.FullPath}");
+                    File.Delete(e.FullPath);
+                }
+                catch (IOException ioException)
+                {
+                    _log.Error(ioException);
+                }
             });
         }
     }
